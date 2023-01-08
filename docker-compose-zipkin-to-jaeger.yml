@@ -1,0 +1,9 @@
+version: "3.4"
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:1.39
+    command: ["--collector.zipkin.host-port=:9411"]
+    ports:
+      - 16686:16686
+      - 6831:6831/udp
+      - 9411:9411
