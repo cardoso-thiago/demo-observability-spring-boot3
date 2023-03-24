@@ -18,6 +18,10 @@ public class DemoOtelController {
         return "Hello " + otelService.hello();
     }
 
+    @GetMapping("/helloJersey")
+    public String helloJersey() {
+        return "Hello " + otelService.helloJersey();
+    }
     @GetMapping("/world")
     public String world() {
         return "World";
