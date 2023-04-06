@@ -1,0 +1,1 @@
+Executando a aplicação com o agent: java -javaagent:opentelemetry-javaagent.jar -Dotel.traces.exporter=zipkin -Dotel.exporter.zipkin.endpoint=http://localhost:9411/api/v2/spans -jar build/libs/demo-observability-spring-boot3-0.0.1-SNAPSHOT.jar

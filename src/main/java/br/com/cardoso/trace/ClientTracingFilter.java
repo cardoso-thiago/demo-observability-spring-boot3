@@ -9,6 +9,7 @@ import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.client.ClientResponseContext;
 import jakarta.ws.rs.client.ClientResponseFilter;
+import org.slf4j.MDC;
 
 @Priority(Priorities.HEADER_DECORATOR)
 public class ClientTracingFilter implements ClientRequestFilter, ClientResponseFilter {
@@ -27,6 +28,7 @@ public class ClientTracingFilter implements ClientRequestFilter, ClientResponseF
     public void filter(ClientRequestContext requestContext) {
         JerseyHttpRequestWrapper request = new JerseyHttpRequestWrapper(requestContext);
         Span span = handler.handleSend(request);
+        span.tag("correlationId", MDC.get("correlationId"));
         CurrentTraceContext.Scope scope = currentTraceContext.newScope(span.context());
         scope.close();
         requestContext.setProperty(SPAN_PROPERTY_NAME, span);
@@ -37,6 +39,7 @@ public class ClientTracingFilter implements ClientRequestFilter, ClientResponseF
         JerseyHttpRequestWrapper request = new JerseyHttpRequestWrapper(requestContext);
         Object spanObject = requestContext.getProperty(SPAN_PROPERTY_NAME);
         if (spanObject instanceof Span) {
+            ((Span) spanObject).tag("correlationId", MDC.get("correlationId"));
             handler.handleReceive(new JerseyHttpResponseWrapper(request, responseContext), (Span) spanObject);
         }
     }
